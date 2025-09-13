@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Country</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Üst Menü (Tripadvisor tarzı navbar) -->
+    <header class="top-header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='quest way.png') }}" alt="Logo">
+            <span class="brand-name">QuestWay</span>
+        </div>
+        <div class="review-button">
+            <a href="/reviews" class="btn">Traveler Reviews</a>
+        </div>
+    </header>
+
+    <!-- Ülke Seçim Bölümü -->
+    <div class="center-content">
+        <h1>Where to?</h1>
+        <form method="POST" action="/country">
+            <div class="search-container">
+                <label for="country"></label>
+                <select name="country" id="country" required class="search-input">
+                    <option value="" disabled selected>Select Country</option>
+                    {% for country in countries %}
+                        <option value="{{ country }}">{{ country }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="search-button">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sohbet Balonu -->
+    <div class="chat-icon" onclick="toggleChat()">💬</div>
+
+    <!-- Sohbet Kutusu (Başlangıçta gizli) -->
+    <div id="chatBox" style="display:none;">
+        <div id="chatContent"></div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
+</html>

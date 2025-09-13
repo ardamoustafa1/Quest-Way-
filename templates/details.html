@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ country }} - {{ section.replace("_", " ").title() }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ country }} - {{ section.replace("_", " ").title() }}</h1>
+        <ul class="content-list">
+            {% for item in content %}
+            <li class="content-item">
+                <div class="content-details">
+                    <h2 class="content-title">{{ item.name }}</h2>
+                    <p class="content-description">{{ item.description }}</p>
+                    <p>
+                        <a href="https://www.google.com/search?q={{ item.name }}" target="_blank" class="google-search-link">Search on Google</a>
+                        <a href="https://www.google.com/maps/search/{{ item.name }}" target="_blank" class="maps-link">View on Maps</a>
+                    </p>
+                </div>
+                <img src="{{ item.image_url }}" alt="{{ item.name }}" class="content-image">
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('index') }}" class="back-btn">Go Back</a>
+    </div>
+</body>
+</html>

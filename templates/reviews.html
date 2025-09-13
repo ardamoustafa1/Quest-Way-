@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveler Reviews</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="top-header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='quest way1.png') }}" alt="Logo">
+            <span class="brand-name">QuestWay</span>
+        </div>
+        <div class="review-button">
+            <a href="/" class="btn">Back to Home</a>
+        </div>
+    </header>
+
+    <div class="reviews-container">
+        <h1>Traveler Reviews</h1>
+
+        <!-- Yorum Ekleme Formu -->
+        <form method="POST" action="/add_comment" class="review-form">
+            <label>
+                <input type="text" name="name" placeholder="Your Name" required>
+            </label>
+            <label>
+                <textarea name="comment" placeholder="Write your review..." required></textarea>
+            </label>
+            <button type="submit">Submit Review</button>
+        </form>
+
+        <!-- Yorumları Listeleme -->
+        <div class="review-list">
+            {% for review in reviews %}
+            <div class="review-item">
+                <h3>{{ review[1] }}</h3> <!-- Yorum yapan kişinin adı -->
+                <p>{{ review[2] }}</p> <!-- Yorum metni -->
+                <span class="review-date">{{ review[3] }}</span> <!-- Yorum tarihi -->
+                <!-- Yorum Silme Butonu -->
+                <form action="{{ url_for('delete_comment', comment_id=review[0]) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
