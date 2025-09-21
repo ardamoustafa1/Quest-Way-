@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - QuestWay{% endblock %}
+
+{% block content %}
+    <!-- Profile Hero Section -->
+    <section class="hero-banner">
+        <div class="hero-background" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>My Profile</h1>
+                <p>Manage your account and view your travel activity</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    {{ (current_user.first_name or current_user.username)[0].upper() }}
+                </div>
+                <div class="profile-details">
+                    <h2>{{ current_user.first_name or current_user.username }}</h2>
+                    <p>{{ current_user.email }}</p>
+                    <p>Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
+                </div>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-number">{{ reviews|length }}</div>
+                    <div class="stat-label">Reviews</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ wishlist|length }}</div>
+                    <div class="stat-label">Wishlist Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ itineraries|length }}</div>
+                    <div class="stat-label">Itineraries</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-sections">
+            <div class="profile-section">
+                <h3><i class="fas fa-star"></i> Recent Reviews</h3>
+                {% if reviews %}
+                    {% for review in reviews %}
+                        <div class="review-card">
+                            <div class="review-header">
+                                <h4>{{ review.title }}</h4>
+                                <div class="review-rating">
+                                    {% for i in range(review.rating) %}
+                                        <span class="star">★</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <p class="review-content">{{ review.content[:150] }}{% if review.content|length > 150 %}...{% endif %}</p>
+                            <div class="review-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> {{ review.place_name }}, {{ review.country }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ review.created_at.strftime('%B %d, %Y') }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p><i class="fas fa-star"></i> No reviews yet. <a href="{{ url_for('add_review') }}">Write your first review</a></p>
+                {% endif %}
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-heart"></i> Wishlist</h3>
+                {% if wishlist %}
+                    {% for item in wishlist %}
+                        <div class="wishlist-card">
+                            <h4>{{ item.place_name }}</h4>
+                            <p>{{ item.description[:100] }}{% if item.description|length > 100 %}...{% endif %}</p>
+                            <div class="wishlist-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> {{ item.city }}, {{ item.country }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ item.added_at.strftime('%B %d, %Y') }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p><i class="fas fa-heart"></i> No wishlist items yet. <a href="{{ url_for('wishlist') }}">Add some places</a></p>
+                {% endif %}
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-route"></i> Itineraries</h3>
+                {% if itineraries %}
+                    {% for itinerary in itineraries %}
+                        <div class="itinerary-card">
+                            <h4>{{ itinerary.title }}</h4>
+                            <p>{{ itinerary.description[:100] }}{% if itinerary.description|length > 100 %}...{% endif %}</p>
+                            <div class="itinerary-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> {{ itinerary.city }}, {{ itinerary.country }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ itinerary.start_date.strftime('%B %d') }} - {{ itinerary.end_date.strftime('%B %d, %Y') }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p><i class="fas fa-route"></i> No itineraries yet. <a href="{{ url_for('create_itinerary') }}">Create your first itinerary</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,50 +1,328 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traveler Reviews</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <header class="top-header">
-        <div class="logo">
-            <img src="{{ url_for('static', filename='quest way1.png') }}" alt="Logo">
-            <span class="brand-name">QuestWay</span>
+{% extends "base.html" %}
+
+{% block title %}Traveler Reviews - QuestWay{% endblock %}
+
+{% block content %}
+    <!-- Reviews Hero Section -->
+    <section class="hero-banner">
+        <div class="hero-background" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+            <div class="hero-overlay"></div>
         </div>
-        <div class="review-button">
-            <a href="/" class="btn">Back to Home</a>
-        </div>
-    </header>
-
-    <div class="reviews-container">
-        <h1>Traveler Reviews</h1>
-
-        <!-- Yorum Ekleme Formu -->
-        <form method="POST" action="/add_comment" class="review-form">
-            <label>
-                <input type="text" name="name" placeholder="Your Name" required>
-            </label>
-            <label>
-                <textarea name="comment" placeholder="Write your review..." required></textarea>
-            </label>
-            <button type="submit">Submit Review</button>
-        </form>
-
-        <!-- Yorumları Listeleme -->
-        <div class="review-list">
-            {% for review in reviews %}
-            <div class="review-item">
-                <h3>{{ review[1] }}</h3> <!-- Yorum yapan kişinin adı -->
-                <p>{{ review[2] }}</p> <!-- Yorum metni -->
-                <span class="review-date">{{ review[3] }}</span> <!-- Yorum tarihi -->
-                <!-- Yorum Silme Butonu -->
-                <form action="{{ url_for('delete_comment', comment_id=review[0]) }}" method="POST" style="display:inline;">
-                    <button type="submit" class="delete-button">Delete</button>
-                </form>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Traveler Reviews</h1>
+                <p>Discover what fellow travelers are saying about their experiences around the world</p>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('add_review') }}" class="add-review-btn">
+                        <i class="fas fa-plus"></i> Share Your Experience
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="add-review-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login to Add Review
+                    </a>
+                {% endif %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-</body>
-</html>
+    </section>
+
+    <!-- Reviews Filter Section -->
+    <section class="reviews-filter">
+        <div class="reviews-container">
+            <div class="filter-section">
+                <h3>Filter Reviews</h3>
+                <div class="filter-options">
+                    <select id="countryFilter" class="filter-select">
+                        <option value="">All Countries</option>
+                        <option value="France">France</option>
+                        <option value="Italy">Italy</option>
+                        <option value="Spain">Spain</option>
+                        <option value="Japan">Japan</option>
+                        <option value="Germany">Germany</option>
+                    </select>
+                    <select id="ratingFilter" class="filter-select">
+                        <option value="">All Ratings</option>
+                        <option value="5">5 Stars</option>
+                        <option value="4">4+ Stars</option>
+                        <option value="3">3+ Stars</option>
+                    </select>
+                    <select id="sortFilter" class="filter-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="rating">Highest Rated</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Grid Section -->
+    <section class="reviews-section">
+        <div class="reviews-container">
+            <div class="reviews-stats">
+                <div class="stat-item">
+                    <h3>{{ reviews|length }}</h3>
+                    <p>Total Reviews</p>
+                </div>
+                <div class="stat-item">
+                    <h3>4.8</h3>
+                    <p>Average Rating</p>
+                </div>
+                <div class="stat-item">
+                    <h3>127</h3>
+                    <p>Countries Covered</p>
+                </div>
+            </div>
+
+            <div class="reviews-grid" id="reviewsGrid">
+                <!-- Sample Reviews -->
+                <div class="review-card" data-country="France" data-rating="5">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="reviewer-details">
+                                <h4>Sarah M.</h4>
+                                <p>Paris, France</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <h3 class="review-title">Amazing Experience in Paris</h3>
+                        <p class="review-text">"QuestWay helped me discover hidden gems in Paris that I never would have found on my own. The recommendations were spot on! The Eiffel Tower was breathtaking, and the local restaurants suggested were absolutely perfect."</p>
+                        <div class="review-tags">
+                            <span class="tag">Culture</span>
+                            <span class="tag">Food</span>
+                            <span class="tag">Architecture</span>
+                        </div>
+                        <div class="review-meta">
+                            <span class="review-date">2 days ago</span>
+                            <div class="review-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-thumbs-up"></i> 12
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-card" data-country="Japan" data-rating="5">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="reviewer-details">
+                                <h4>Mike R.</h4>
+                                <p>Tokyo, Japan</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <h3 class="review-title">Perfect Tokyo Adventure</h3>
+                        <p class="review-text">"The itinerary suggestions were incredible. I had the most authentic Japanese experience thanks to QuestWay's local insights. From the bustling streets of Shibuya to the peaceful temples, everything was perfectly planned."</p>
+                        <div class="review-tags">
+                            <span class="tag">Culture</span>
+                            <span class="tag">Temples</span>
+                            <span class="tag">Food</span>
+                        </div>
+                        <div class="review-meta">
+                            <span class="review-date">1 week ago</span>
+                            <div class="review-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-thumbs-up"></i> 8
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-card" data-country="Italy" data-rating="5">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="reviewer-details">
+                                <h4>Emma L.</h4>
+                                <p>Rome, Italy</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <h3 class="review-title">Unforgettable Rome Trip</h3>
+                        <p class="review-text">"From the Colosseum to hidden trattorias, QuestWay made my Roman holiday absolutely perfect. Highly recommended! The historical sites were incredible and the food recommendations were spot on."</p>
+                        <div class="review-tags">
+                            <span class="tag">History</span>
+                            <span class="tag">Food</span>
+                            <span class="tag">Architecture</span>
+                        </div>
+                        <div class="review-meta">
+                            <span class="review-date">3 days ago</span>
+                            <div class="review-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-thumbs-up"></i> 15
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Reviews -->
+                {% for review in reviews %}
+                <div class="review-card" data-country="{{ review.country or 'Unknown' }}" data-rating="{{ review.rating or 5 }}">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="reviewer-details">
+                                <h4>{{ review.user.first_name or review.user.username if review.user else 'Anonymous' }}</h4>
+                                <p>{{ review.city or 'Unknown' }}, {{ review.country or 'Unknown' }}</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            {% for i in range(5) %}
+                                <span class="star {% if i < (review.rating or 5) %}filled{% endif %}">★</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <h3 class="review-title">{{ review.title or 'Great Experience' }}</h3>
+                        <p class="review-text">{{ review.content or 'No content available' }}</p>
+                        <div class="review-tags">
+                            <span class="tag">{{ review.place_type or 'General' }}</span>
+                            {% if review.verified_visit %}
+                                <span class="tag verified">Verified Visit</span>
+                            {% endif %}
+                        </div>
+                        <div class="review-meta">
+                            <span class="review-date">{{ review.created_at.strftime('%B %d, %Y') if review.created_at else 'Unknown date' }}</span>
+                            <div class="review-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-thumbs-up"></i> 0
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-section">
+                <button class="load-more-btn" onclick="loadMoreReviews()">
+                    <i class="fas fa-plus"></i> Load More Reviews
+                </button>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const countryFilter = document.getElementById('countryFilter');
+    const ratingFilter = document.getElementById('ratingFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const reviewsGrid = document.getElementById('reviewsGrid');
+    
+    function filterReviews() {
+        const country = countryFilter.value;
+        const rating = ratingFilter.value;
+        const sort = sortFilter.value;
+        
+        let reviews = Array.from(reviewsGrid.children);
+        
+        // Filter by country
+        if (country) {
+            reviews = reviews.filter(review => 
+                review.dataset.country === country
+            );
+        }
+        
+        // Filter by rating
+        if (rating) {
+            reviews = reviews.filter(review => 
+                parseInt(review.dataset.rating) >= parseInt(rating)
+            );
+        }
+        
+        // Sort reviews
+        if (sort === 'newest') {
+            reviews.sort((a, b) => new Date(b.querySelector('.review-date').textContent) - new Date(a.querySelector('.review-date').textContent));
+        } else if (sort === 'oldest') {
+            reviews.sort((a, b) => new Date(a.querySelector('.review-date').textContent) - new Date(b.querySelector('.review-date').textContent));
+        } else if (sort === 'rating') {
+            reviews.sort((a, b) => parseInt(b.dataset.rating) - parseInt(a.dataset.rating));
+        }
+        
+        // Clear grid and add filtered reviews
+        reviewsGrid.innerHTML = '';
+        reviews.forEach(review => reviewsGrid.appendChild(review));
+    }
+    
+    countryFilter.addEventListener('change', filterReviews);
+    ratingFilter.addEventListener('change', filterReviews);
+    sortFilter.addEventListener('change', filterReviews);
+});
+
+function loadMoreReviews() {
+    // This would typically load more reviews from the server
+    console.log('Loading more reviews...');
+}
+
+// Like functionality
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.like-btn')) {
+        const btn = e.target.closest('.like-btn');
+        const icon = btn.querySelector('i');
+        const count = btn.querySelector('i').nextSibling;
+        
+        if (icon.classList.contains('fas')) {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            count.textContent = parseInt(count.textContent) - 1;
+        } else {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            count.textContent = parseInt(count.textContent) + 1;
+        }
+    }
+});
+</script>
+{% endblock %}

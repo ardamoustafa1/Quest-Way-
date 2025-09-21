@@ -39,61 +39,63 @@ const countryPreferences = {
 
 let userPreferences = [];
 let currentQuestion = -1;
-const chatContent = document.getElementById("chatContent");
-const chatBox = document.getElementById("chatBox");
 
 function toggleChat() {
-    chatBox.style.display = (chatBox.style.display === "flex") ? "none" : "flex";
-    if (chatBox.style.display === "flex") {
+    const chatAssistant = document.getElementById("chatAssistant");
+    const toggleBtn = document.getElementById("aiToggleBtn");
+    
+    if (chatAssistant.style.display === "none" || chatAssistant.style.display === "") {
+        chatAssistant.style.display = "flex";
+        toggleBtn.style.display = "none";
         startChat();
+    } else {
+        chatAssistant.style.display = "none";
+        toggleBtn.style.display = "flex";
     }
 }
 
 function startChat() {
-    chatContent.innerHTML = "";
+    const chatMessages = document.getElementById("chatMessages");
+    chatMessages.innerHTML = "";
     currentQuestion = -1;
     userPreferences = [];
 
     const firstMessage = document.createElement("div");
-    firstMessage.classList.add("chat-message", "intro-message");
-    firstMessage.innerText = "Are you unsure about which country to visit?";
-    chatContent.appendChild(firstMessage);
+    firstMessage.classList.add("message", "bot-message");
+    firstMessage.innerHTML = "<p>Hello! I'm your AI travel assistant. I'll ask you a few questions to recommend the perfect destination for you!</p>";
+    chatMessages.appendChild(firstMessage);
 
     setTimeout(() => {
-        firstMessage.classList.add("fade-up");
-        setTimeout(() => {
-            firstMessage.remove();
-            showQuestion();
-        }, 1500);
-    }, 2000);
+        showQuestion();
+    }, 1500);
 }
 
 function showQuestion() {
     if (currentQuestion < questions.length - 1) {
         currentQuestion++;
 
-        chatContent.innerHTML = ""; // Önceki içeriği temizle
+        const chatMessages = document.getElementById("chatMessages");
 
         const questionObj = questions[currentQuestion];
 
         const messageDiv = document.createElement("div");
-        messageDiv.classList.add("chat-message", "fade-in");
-        messageDiv.innerText = questionObj.text;
-        chatContent.appendChild(messageDiv);
+        messageDiv.classList.add("message", "bot-message");
+        messageDiv.innerHTML = `<p><strong>Question ${currentQuestion + 1}:</strong> ${questionObj.text}</p>`;
+        chatMessages.appendChild(messageDiv);
 
         const buttonsDiv = document.createElement("div");
-        buttonsDiv.classList.add("chat-buttons");
+        buttonsDiv.classList.add("question-options");
 
         Object.keys(questionObj.options).forEach(option => {
             const button = document.createElement("button");
+            button.classList.add("option-btn");
             button.innerText = option;
             button.onclick = () => handleAnswer(questionObj.options[option]);
             buttonsDiv.appendChild(button);
         });
 
-        chatContent.appendChild(buttonsDiv);
-
-        adjustChatHeight();
+        chatMessages.appendChild(buttonsDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     } else {
         showCountryRecommendation();
     }
@@ -102,14 +104,22 @@ function showQuestion() {
 function handleAnswer(answer) {
     userPreferences.push(answer);
 
+    // Add user's answer to chat
+    const chatMessages = document.getElementById("chatMessages");
+    const answerDiv = document.createElement("div");
+    answerDiv.classList.add("message", "user-message");
+    answerDiv.innerHTML = `<p>${Object.keys(questions[currentQuestion].options).find(key => questions[currentQuestion].options[key] === answer)}</p>`;
+    chatMessages.appendChild(answerDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
     setTimeout(() => {
         showQuestion();
-    }, 500);
+    }, 1000);
 }
 
 // En uygun ülkeyi bul ve göster
 function showCountryRecommendation() {
-    chatContent.innerHTML = ""; // Önceki içeriği temizle
+    const chatMessages = document.getElementById("chatMessages");
 
     let bestMatch = "";
     let maxMatches = 0;
@@ -125,13 +135,73 @@ function showCountryRecommendation() {
     }
 
     const resultMessage = document.createElement("div");
-    resultMessage.classList.add("chat-message", "fade-in");
-    resultMessage.innerText = `Based on your preferences, we recommend: ${bestMatch}! 🌍`;
-    chatContent.appendChild(resultMessage);
+    resultMessage.classList.add("message", "bot-message", "recommendation");
+    resultMessage.innerHTML = `
+        <p><strong>🎯 Based on your preferences, I recommend:</strong></p>
+        <div class="recommended-countries">
+            <div class="country-recommendation">
+                <h4>${bestMatch}</h4>
+                <button class="explore-btn" onclick="exploreCountry('${bestMatch}')">Explore ${bestMatch}</button>
+            </div>
+        </div>
+        <div class="restart-chat">
+            <button class="restart-btn" onclick="restartChat()">Start New Recommendation</button>
+        </div>
+    `;
+    chatMessages.appendChild(resultMessage);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function adjustChatHeight() {
-    setTimeout(() => {
-        chatBox.style.maxHeight = chatContent.scrollHeight + "px";
-    }, 300);
+function exploreCountry(country) {
+    window.location.href = `/country?country=${encodeURIComponent(country)}`;
 }
+
+function restartChat() {
+    currentQuestion = -1;
+    userPreferences = [];
+    startChat();
+}
+
+// Send message function for AI chat
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (message) {
+        // Add user message to chat
+        const chatMessages = document.getElementById("chatMessages");
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", "user-message");
+        messageDiv.innerHTML = `<p>${message}</p>`;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        input.value = '';
+        
+        // Show bot response
+        setTimeout(() => {
+            const botResponse = document.createElement("div");
+            botResponse.classList.add("message", "bot-message");
+            botResponse.innerHTML = "<p>Please use the option buttons to answer the questions. This helps me provide better recommendations!</p>";
+            chatMessages.appendChild(botResponse);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 500);
+    }
+}
+
+// Enter key support for chat input
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('chatInput');
+    if (input) {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+    
+    // Auto-start AI chat when page loads
+    setTimeout(() => {
+        startChat();
+    }, 1000);
+});

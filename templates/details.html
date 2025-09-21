@@ -1,30 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ country }} - {{ section.replace("_", " ").title() }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>{{ country }} - {{ section.replace("_", " ").title() }}</h1>
-        <ul class="content-list">
-            {% for item in content %}
-            <li class="content-item">
-                <div class="content-details">
-                    <h2 class="content-title">{{ item.name }}</h2>
-                    <p class="content-description">{{ item.description }}</p>
-                    <p>
-                        <a href="https://www.google.com/search?q={{ item.name }}" target="_blank" class="google-search-link">Search on Google</a>
-                        <a href="https://www.google.com/maps/search/{{ item.name }}" target="_blank" class="maps-link">View on Maps</a>
-                    </p>
-                </div>
-                <img src="{{ item.image_url }}" alt="{{ item.name }}" class="content-image">
-            </li>
-            {% endfor %}
-        </ul>
-        <a href="{{ url_for('index') }}" class="back-btn">Go Back</a>
+{% extends "base.html" %}
+
+{% block title %}{{ country }} - {{ section.replace("_", " ").title() }} - QuestWay{% endblock %}
+
+{% block content %}
+<!-- Details Hero Section -->
+<section class="details-hero">
+    <div class="hero-background" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>{{ country }} - {{ section.replace("_", " ").title() }}</h1>
+            <p>Discover the best {{ section.replace("_", " ").lower() }} in {{ country }}</p>
+        </div>
     </div>
-</body>
-</html>
+</section>
+
+<!-- Content Section -->
+<section class="content-section">
+    <div class="container">
+        <div class="content-grid">
+            {% for item in content %}
+            <div class="content-card">
+                <div class="content-image-container">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="content-image">
+                    <div class="content-overlay">
+                        <div class="content-actions">
+                            <a href="https://www.google.com/search?q={{ item.name }}" target="_blank" class="action-btn">
+                                <i class="fas fa-search"></i>
+                                Search
+                            </a>
+                            <a href="https://www.google.com/maps/search/{{ item.name }}" target="_blank" class="action-btn">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-details">
+                    <h3 class="content-title">{{ item.name }}</h3>
+                    <p class="content-description">{{ item.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="back-navigation">
+            <a href="{{ url_for('country') }}?country={{ country }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to {{ country }}
+            </a>
+            <a href="{{ url_for('index') }}" class="back-btn secondary">
+                <i class="fas fa-home"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

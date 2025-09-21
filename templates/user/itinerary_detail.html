@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ itinerary.title }} - QuestWay{% endblock %}
+
+{% block content %}
+    <div class="itinerary-detail-container">
+        <div class="itinerary-header">
+            <div class="itinerary-info">
+                <h1>{{ itinerary.title }}</h1>
+                <p class="itinerary-description">{{ itinerary.description }}</p>
+                <div class="itinerary-meta">
+                    <span class="location">
+                        <i class="fas fa-map-marker-alt"></i> {{ itinerary.city }}, {{ itinerary.country }}
+                    </span>
+                    <span class="dates">
+                        <i class="fas fa-calendar"></i> {{ itinerary.start_date.strftime('%B %d, %Y') }} - {{ itinerary.end_date.strftime('%B %d, %Y') }}
+                    </span>
+                    <span class="status">
+                        {% if itinerary.is_public %}
+                            <i class="fas fa-globe"></i> Public
+                        {% else %}
+                            <i class="fas fa-lock"></i> Private
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="itinerary-actions">
+                <a href="{{ url_for('itineraries') }}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to Itineraries
+                </a>
+            </div>
+        </div>
+
+        <div class="itinerary-content">
+            <div class="itinerary-timeline">
+                <h3>Itinerary Timeline</h3>
+                {% if items %}
+                    {% for item in items %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <span class="day-number">Day {{ item.day_number }}</span>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>{{ item.title }}</h4>
+                                <p>{{ item.description }}</p>
+                                <div class="timeline-meta">
+                                    <span class="time">
+                                        <i class="fas fa-clock"></i> {{ item.start_time.strftime('%H:%M') }} - {{ item.end_time.strftime('%H:%M') }}
+                                    </span>
+                                    <span class="location">
+                                        <i class="fas fa-map-marker-alt"></i> {{ item.location }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-timeline">
+                        <i class="fas fa-calendar-plus"></i>
+                        <h4>No activities planned yet</h4>
+                        <p>Start adding activities to your itinerary!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
