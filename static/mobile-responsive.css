@@ -190,6 +190,36 @@
     .main-search-container {
         margin: 1rem;
         border-radius: 15px;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .search-tabs {
+        display: flex;
+        background: var(--light-gray);
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .search-tab {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 1rem 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--medium-gray);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .search-tab.active {
+        background: var(--white);
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--primary-color);
     }
     
     .search-inputs {
@@ -202,11 +232,53 @@
         width: 100%;
     }
     
+    .search-field label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+        margin-bottom: 0.5rem;
+    }
+    
+    .search-field select {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        color: var(--dark-gray);
+        background: var(--white);
+        transition: var(--transition);
+        min-height: 48px;
+    }
+    
+    .search-field select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+    }
+    
     .search-submit-btn {
         width: 100%;
         padding: 1rem;
         font-size: 1rem;
         min-height: 48px;
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .search-submit-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
     }
     
     /* Quick links fixes */
