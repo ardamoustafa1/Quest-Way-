@@ -156,24 +156,58 @@
     
     /* Hero section fixes */
     .hero-banner {
-        height: 50vh;
-        min-height: 300px;
+        height: 70vh;
+        min-height: 500px;
         padding-top: 80px; /* Header height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .hero-content {
-        padding: 0 1rem;
+        padding: 2rem 1rem;
+        width: 100%;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .hero-text {
+        width: 100%;
+        margin-bottom: 2rem;
+        z-index: 5;
+        position: relative;
     }
     
     .hero-text h1 {
-        font-size: 2rem;
-        margin-bottom: 0.75rem;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
         line-height: 1.2;
+        color: var(--white);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        font-weight: 700;
     }
     
     .hero-text p {
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        color: var(--white);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        font-weight: 400;
+        line-height: 1.4;
+    }
+    
+    /* Hero overlay enhancement for mobile */
+    .hero-banner .hero-overlay {
+        background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
     }
     
     .hero-text .add-review-btn,
@@ -188,10 +222,14 @@
     
     /* Search container fixes */
     .main-search-container {
-        margin: 1rem;
+        margin: 0;
         border-radius: 15px;
         position: relative;
         z-index: 10;
+        width: 100%;
+        max-width: 500px;
+        background: var(--white);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     
     .search-tabs {
@@ -471,12 +509,21 @@
     }
     
     /* Hero */
+    .hero-banner {
+        height: 60vh;
+        min-height: 400px;
+    }
+    
     .hero-text h1 {
         font-size: 2.5rem;
+        color: var(--white);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
     
     .hero-text p {
         font-size: 1.1rem;
+        color: var(--white);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
     
     /* Search */
@@ -540,8 +587,20 @@
         display: none;
     }
     
+    .hero-banner {
+        height: 70vh;
+        min-height: 500px;
+    }
+    
     .hero-text h1 {
         font-size: 3rem;
+        color: var(--white);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .hero-text p {
+        color: var(--white);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
     
     .search-inputs {
@@ -587,8 +646,20 @@
         display: none;
     }
     
+    .hero-banner {
+        height: 80vh;
+        min-height: 600px;
+    }
+    
     .hero-text h1 {
         font-size: 3.5rem;
+        color: var(--white);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .hero-text p {
+        color: var(--white);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
     
     .search-inputs {
