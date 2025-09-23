@@ -1,6 +1,38 @@
 /* QuestWay - Mobile Responsive Fixes */
 /* Sadece layout düzeltmeleri, renk ve tasarım değişikliği yok */
 
+/* ===== EXTRA SMALL MOBILE (320px-479px) ===== */
+@media (max-width: 479px) {
+    .hero-banner {
+        height: 100vh;
+        min-height: 500px;
+        padding-top: 70px;
+    }
+    
+    .hero-text h1 {
+        font-size: 2rem;
+        color: #ffffff !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .hero-text p {
+        font-size: 1rem;
+        color: #ffffff !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .main-search-container {
+        margin-top: 0.5rem;
+        max-width: 100%;
+    }
+}
+
 /* ===== MOBILE NAVIGATION ===== */
 .mobile-menu-toggle {
     display: none;
@@ -156,58 +188,89 @@
     
     /* Hero section fixes */
     .hero-banner {
-        height: 70vh;
-        min-height: 500px;
+        height: 100vh;
+        min-height: 600px;
         padding-top: 80px; /* Header height */
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
     }
     
     .hero-content {
         padding: 2rem 1rem;
         width: 100%;
         max-width: 100%;
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         align-items: center;
         text-align: center;
+        position: relative;
+        z-index: 10;
+        height: 100%;
+        justify-content: center;
     }
     
     .hero-text {
         width: 100%;
         margin-bottom: 2rem;
-        z-index: 5;
+        z-index: 10;
         position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
     .hero-text h1 {
         font-size: 2.5rem;
         margin-bottom: 1rem;
         line-height: 1.2;
-        color: var(--white);
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        color: #ffffff !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         font-weight: 700;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin: 0 0 1rem 0 !important;
+        padding: 0 !important;
     }
     
     .hero-text p {
         font-size: 1.2rem;
         margin-bottom: 2rem;
-        color: var(--white);
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        color: #ffffff !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         font-weight: 400;
         line-height: 1.4;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin: 0 0 2rem 0 !important;
+        padding: 0 !important;
     }
     
-    /* Hero overlay enhancement for mobile */
-    .hero-banner .hero-overlay {
-        background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%);
+    /* Hero background and overlay for mobile */
+    .hero-banner .hero-background {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
         z-index: 1;
+    }
+    
+    .hero-banner .hero-overlay {
+        background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 2;
     }
     
     .hero-text .add-review-btn,
@@ -225,11 +288,12 @@
         margin: 0;
         border-radius: 15px;
         position: relative;
-        z-index: 10;
+        z-index: 15;
         width: 100%;
         max-width: 500px;
-        background: var(--white);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        margin-top: 1rem;
     }
     
     .search-tabs {
