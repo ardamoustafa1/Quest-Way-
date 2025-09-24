@@ -160,7 +160,7 @@
                         </div>
                     {% endfor %}
                 </div>
-            {% else %}
+            {% elif search_performed %}
                 <div class="no-results">
                     <div class="no-results-icon">
                         <i class="fas fa-search"></i>
@@ -170,6 +170,28 @@
                     <div class="no-results-actions">
                         <a href="{{ url_for('index') }}" class="btn-primary">Browse Destinations</a>
                         <a href="{{ url_for('reviews') }}" class="btn-secondary">View All Reviews</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="search-prompt">
+                    <div class="search-prompt-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Start Your Search</h3>
+                    <p>Use the search form above to find amazing places, reviews, and experiences.</p>
+                    <div class="search-prompt-features">
+                        <div class="feature-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Search by location</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <span>Filter by rating</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-tags"></i>
+                            <span>Browse by category</span>
+                        </div>
                     </div>
                 </div>
             {% endif %}
@@ -197,19 +219,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Real-time search suggestions
-    if (searchInput) {
-        let searchTimeout;
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(function() {
-                // Auto-submit after 2 seconds of no typing
-                if (searchInput.value.length >= 3) {
-                    searchForm.submit();
-                }
-            }, 2000);
-        });
-    }
+    // Real-time search suggestions (disabled auto-submit)
+    // Users should manually click search button or press Enter
     
     // Form validation
     if (searchForm) {
