@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}{{ country }} - {{ section.replace("_", " ").title() }} - QuestWay{% endblock %}
+
+{% block content %}
+<!-- Details Hero Section -->
+<section class="details-hero">
+    <div class="hero-background" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>{{ country }} - {{ section.replace("_", " ").title() }}</h1>
+            <p>Discover the best {{ section.replace("_", " ").lower() }} in {{ country }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Content Section -->
+<section class="content-section">
+    <div class="container">
+        <div class="content-grid">
+            {% for item in content %}
+            <div class="content-card">
+                <div class="content-image-container">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="content-image">
+                    <div class="content-overlay">
+                        <div class="content-actions">
+                            <a href="https://www.google.com/search?q={{ item.name }}" target="_blank" class="action-btn">
+                                <i class="fas fa-search"></i>
+                                Search
+                            </a>
+                            <a href="https://www.google.com/maps/search/{{ item.name }}" target="_blank" class="action-btn">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Maps
+                            </a>
+                        </div>
+                    </div>
+                    <button class="heart-btn" 
+                            data-country="{{ country }}" 
+                            data-city="{{ country }}" 
+                            data-place-name="{{ item.name }}"
+                            data-place-type="{{ section }}"
+                            data-description="{{ item.description }}"
+                            data-image-url="{{ item.image_url }}">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+                <div class="content-details">
+                    <h3 class="content-title">{{ item.name }}</h3>
+                    <p class="content-description">{{ item.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="back-navigation">
+            <a href="{{ url_for('country') }}?country={{ country }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to {{ country }}
+            </a>
+            <a href="{{ url_for('index') }}" class="back-btn secondary">
+                <i class="fas fa-home"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+// Load wishlist status on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadWishlistStatus();
+});
+
+function loadWishlistStatus() {
+    const isLoggedIn = {{ 'true' if current_user.is_authenticated else 'false' }};
+    
+    if (!isLoggedIn) {
+        return;
+    }
+
+    // Get all heart buttons
+    const heartButtons = document.querySelectorAll('.heart-btn');
+    
+    // For now, we'll just show empty hearts
+    // In a real implementation, you'd fetch the user's wishlist from the server
+    heartButtons.forEach(btn => {
+        const icon = btn.querySelector('i');
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        btn.classList.remove('favorited');
+    });
+}
+
+// Heart button functionality for wishlist
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.heart-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const btn = e.target.closest('.heart-btn');
+        const icon = btn.querySelector('i');
+        const country = btn.getAttribute('data-country');
+        const city = btn.getAttribute('data-city');
+        const placeName = btn.getAttribute('data-place-name');
+        const placeType = btn.getAttribute('data-place-type');
+        const description = btn.getAttribute('data-description');
+        const imageUrl = btn.getAttribute('data-image-url');
+        
+        // Check if user is logged in
+        const isLoggedIn = {{ 'true' if current_user.is_authenticated else 'false' }};
+        
+        if (!isLoggedIn) {
+            // Redirect to login page
+            window.location.href = '/login';
+            return;
+        }
+        
+        // Toggle heart state
+        if (btn.classList.contains('favorited')) {
+            // Remove from wishlist
+            removeFromWishlist(btn, icon, country, city, placeName, placeType);
+        } else {
+            // Add to wishlist
+            addToWishlist(btn, icon, country, city, placeName, placeType, description, imageUrl);
+        }
+    }
+});
+
+function addToWishlist(btn, icon, country, city, placeName, placeType, description, imageUrl) {
+    fetch('/api/add_to_wishlist', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            place_name: placeName,
+            place_type: placeType,
+            country: country,
+            city: city,
+            description: description,
+            image_url: imageUrl
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            // Update UI
+            btn.classList.add('favorited');
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            
+            // Show success message
+            showNotification('Added to wishlist!', 'success');
+        } else {
+            showNotification(data.message || 'Failed to add to wishlist', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to add to wishlist: ' + error.message, 'error');
+    });
+}
+
+function removeFromWishlist(btn, icon, country, city, placeName, placeType) {
+    fetch('/api/remove_from_wishlist', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            place_name: placeName,
+            country: country,
+            city: city
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update UI
+            btn.classList.remove('favorited');
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            
+            // Show success message
+            showNotification('Removed from wishlist!', 'success');
+        } else {
+            showNotification(data.message || 'Failed to remove from wishlist', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to remove from wishlist', 'error');
+    });
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    // Style the notification
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        font-weight: 500;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

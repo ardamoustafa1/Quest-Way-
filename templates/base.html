@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}QuestWay - Your Ultimate Travel Companion{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='modern-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mobile-responsive.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="QuestWay - Your ultimate travel companion for discovering amazing destinations around the world. Get expert recommendations, read reviews, and plan your perfect trip.">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="top-header">
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <img src="{{ url_for('static', filename='questway-logo-compass.svg') }}" alt="QuestWay Logo">
+                <span class="brand-name">QuestWay</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+                    <li><a href="{{ url_for('reviews') }}" class="{% if request.endpoint == 'reviews' %}active{% endif %}">Reviews</a></li>
+                    <li><a href="{{ url_for('search') }}" class="{% if request.endpoint == 'search' %}active{% endif %}">Search</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('wishlist') }}" class="{% if request.endpoint == 'wishlist' %}active{% endif %}">Wishlist</a></li>
+                        <li><a href="{{ url_for('itineraries') }}" class="{% if request.endpoint == 'itineraries' %}active{% endif %}">Itineraries</a></li>
+                        <li><a href="{{ url_for('profile') }}" class="{% if request.endpoint == 'profile' %}active{% endif %}">Profile</a></li>
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a></li>
+                        <li><a href="{{ url_for('register') }}" class="{% if request.endpoint == 'register' %}active{% endif %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-close" id="mobileMenuClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <ul class="mobile-nav-links">
+                <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+                <li><a href="{{ url_for('reviews') }}" class="{% if request.endpoint == 'reviews' %}active{% endif %}">Reviews</a></li>
+                <li><a href="{{ url_for('search') }}" class="{% if request.endpoint == 'search' %}active{% endif %}">Search</a></li>
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('wishlist') }}" class="{% if request.endpoint == 'wishlist' %}active{% endif %}">Wishlist</a></li>
+                    <li><a href="{{ url_for('itineraries') }}" class="{% if request.endpoint == 'itineraries' %}active{% endif %}">Itineraries</a></li>
+                    <li><a href="{{ url_for('profile') }}" class="{% if request.endpoint == 'profile' %}active{% endif %}">Profile</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}" class="{% if request.endpoint == 'register' %}active{% endif %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
